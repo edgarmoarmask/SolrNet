@@ -1,0 +1,99 @@
+﻿@page "/settings"
+@inject HttpClient Http
+@inject ISnackbar Snackbar
+
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+    <MudTabPanel Text="Synonyms">
+        <MudText>
+            <MudText Typo="Typo.h6">
+                Please, enter sysnonyms comma seperated
+            </MudText>
+            <br/>
+            <MudTextField @bind-Value="input"
+                          Variant="Variant.Outlined" 
+                          Label="Synonyms" />
+
+            <br />
+            <div style="display: flex; justify-content:flex-end; width: 100%;">
+                <MudButton StartIcon="@Icons.Filled.Save" OnClick="AddSynonym" Variant="Variant.Filled" Color="Color.Primary" Style="width: 120px; height:48px; padding: 16px;">Save</MudButton>
+                <MudButton StartIcon="@Icons.Filled.Cancel" OnClick="ClearInput" Variant="Variant.Outlined" Color="Color.Secondary" Style="width: 120px; height:48px; padding: 16px; margin-left: 16px;">Cancel</MudButton>
+            </div>
+        </MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Stop words">
+        <MudText>
+            <MudText Typo="Typo.h6">
+                Please, enter stop words comma seperated
+            </MudText>
+            <br/>
+            <MudTextField @bind-Value="input"
+                          Variant="Variant.Outlined" 
+                          Label="Stop words" />
+
+            <br />
+            <div style="display: flex; justify-content:flex-end; width: 100%;">
+                <MudButton StartIcon="@Icons.Filled.Save" OnClick="AddStopword" Variant="Variant.Filled" Color="Color.Primary" Style="width: 120px; height:48px; padding: 16px; ">Save</MudButton>
+                <MudButton StartIcon="@Icons.Filled.Cancel" OnClick="ClearInput" Variant="Variant.Outlined" Color="Color.Secondary" Style="width: 120px; height:48px; padding: 16px; margin-left: 16px;">Cancel</MudButton>
+            </div>
+        </MudText>
+    </MudTabPanel>
+    <MudTabPanel Text="Protwords">
+        <MudText>
+            <MudText Typo="Typo.h6">
+                Please, enter protwords comma seperated
+            </MudText>
+            <br />
+            <MudTextField @bind-Value="input"
+                          Variant="Variant.Outlined"
+                          Label="Protwords" />
+
+            <br />
+            <div style="display: flex; justify-content:flex-end; width: 100%;">
+                <MudButton StartIcon="@Icons.Filled.Save" OnClick="AddProtword" Variant="Variant.Filled" Color="Color.Primary" Style="width: 120px; height:48px; padding: 16px; ">Save</MudButton>
+                <MudButton StartIcon="@Icons.Filled.Cancel" OnClick="ClearInput" Variant="Variant.Outlined" Color="Color.Secondary" Style="width: 120px; height:48px; padding: 16px; margin-left: 16px;">Cancel</MudButton>
+            </div>
+        </MudText>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    public string input { get; set; }
+
+    public async void AddSynonym() {
+        var result = await Http.GetAsync($"api/File/AddSynonynms/{input}");
+        if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            Snackbar.Add("Synonyms has been added successfuly", Severity.Success);
+        else
+            Console.WriteLine("Something went wrong");
+
+        ClearInput();
+        StateHasChanged();
+    }
+  
+    public async void AddProtword() {
+        var result = await Http.GetAsync($"api/File/AddProtwords/{input}");
+        if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            Snackbar.Add("Protwords has been added successfuly", Severity.Success);
+        else
+            Console.WriteLine("Something went wrong");
+
+        ClearInput();
+        StateHasChanged();
+    }  
+
+    public async void AddStopword() {
+        var result = await Http.GetAsync($"api/File/AddStopwords/{input}");
+        if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            Snackbar.Add("Stop words has been added successfuly", Severity.Success);
+        else
+            Console.WriteLine("Something went wrong");
+
+        ClearInput();
+        StateHasChanged();
+    }
+
+    public void ClearInput(){
+        input = "";
+    }
+
+}

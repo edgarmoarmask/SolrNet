@@ -1,0 +1,36 @@
+﻿@using uploadTest.Shared
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteForever" Class="mr-3 mb-n1"/>
+            Delete
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        Do you really want to delete @index.DocName.Single() ?
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Error" OnClick="DeleteServer">Delete file</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public IndexFields index { get; set; } = new IndexFields();
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void DeleteServer()
+    {
+        Http.GetAsync($"api/File/Delete/{index.Id}");
+        Snackbar.Add("Document has been deletedv successfully", Severity.Success);
+        MudDialog.Close();
+    }
+}

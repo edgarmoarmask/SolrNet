@@ -1,0 +1,139 @@
+﻿@page "/documentation"
+
+<MudText Typo="Typo.h3">Documentation</MudText>
+<br />
+<MudText Typo="Typo.h6">Standart query search</MudText>
+<MudText Typo="Typo.body2">You can search for document content, property, type just by writing the query in searhc box and click to the search button</MudText>
+<p>For example: "document", "exists", "year" etc.</p>
+<br />
+
+<MudText Typo="Typo.h6">Specifying Terms for the Standard Query Parser</MudText>
+<MudText Typo="Typo.body2">A query to the standard query parser is broken up into terms and operators. There are two types of terms: single terms and phrases. <br />
+<ul style="list-style: circle; padding-left: 24px">
+    <li>A single term is a single word such as "test" or "hello"</li>
+   <li>A phrase is a group of words surrounded by double quotes such as "hello dolly"</li>
+</ul>
+Multiple terms can be combined together with Boolean operators to form more complex queries (as described below).</MudText>
+<br />
+<MudText Typo="Typo.h6">Wildcard Searches</MudText>
+<MudText Typo="Typo.body2">
+    Solr’s standard query parser supports single and multiple character wildcard searches within 
+    single terms. Wildcard characters can be applied to single terms, but not to search phrases.
+</MudText>
+<br />
+<MudTable Items="@Temp" Hover="true" Breakpoint="Breakpoint.Sm" Bordered="true">
+    <ColGroup>
+        <col>
+        <col>
+        <col>
+    </ColGroup>
+    <HeaderContent>
+            <MudTh style="text-align:center">Wildcard Search Type</MudTh>
+            <MudTh style="text-align:center">Special Character</MudTh>
+            <MudTh style="text-align:center">Example</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.SearchType</MudTd>
+        <MudTd>@context.Character</MudTd>
+        <MudTd>@context.Example</MudTd>
+    </RowTemplate>
+</MudTable>
+<br />
+<MudText Typo="Typo.h6">Fuzzy Searches</MudText>
+<MudText Typo="Typo.body2">
+    Fuzzy searches discover terms that are similar to a specified term without necessarily being an exact match. To perform a fuzzy search, use the tilde ~ 
+    symbol at the end of a single-word term. For example, to search for a term similar in spelling to "roam," use the fuzzy search:
+</MudText>
+<p><code>roam~</code></p>
+<div>This search will match terms like roams, foam, & foams. It will also match the word "roam" itself.
+    <br />
+    An optional distance parameter specifies the maximum number of edits allowed, between 0 and 2, defaulting to 2. For example:
+</div>
+<p><code>roam~1</code></p>
+<div>This will match terms like roams & foam - but not foams since it has an edit distance of "2".</div>
+<br />
+<MudText Typo="Typo.h6">Proximity Searches</MudText>
+<MudText Typo="Typo.body2">A proximity search looks for terms that are within a specific distance from one another.
+<br />
+To perform a proximity search, add the tilde character <code>~</code> and a numeric value to the end of a search phrase. For example, to search for a 
+"apache" and "jakarta" within 10 words of each other in a document, use the search:
+<br/>
+<code>"jakarta apache"~10</code>
+<br />
+The distance referred to here is the number of term movements needed to match the specified phrase. 
+In the example above, if "apache" and "jakarta" were 10 spaces apart in a field, but "apache" appeared before "jakarta", more than 10 term 
+movements would be required to move the terms together and position "apache" to the right of "jakarta" with a space in between.</MudText>
+<br />
+<MudText Typo="Typo.h6">Querying Specific Fields</MudText>
+
+<MudText Typo="Typo.body2">If you do not specify a field in a query, Solr searches only the default field. Alternatively, you can specify a different field or a combination of fields in a query.
+
+To specify a field, type the field name followed by a colon ":" and then the term you are searching for within the field.
+
+For example, suppose an index contains two fields, title and text,and that text is the default field. If you want to find a document called 
+"The Right Way" which contains the text "don’t go this way," you could include either of the following terms in your search query:
+<br />
+<code>docContent:"The Right Way" AND text:go</code>
+<br />
+<code>docContent:"Do it right" AND go</code>
+<br />
+Since text is the default field, the field indicator is not required; hence the second query above omits it.
+The field is only valid for the term that it directly precedes, so the query 
+<code>title:Do it right</code> will find only "Do" in the title field. It will find "it" and "right" in the default field (in this case the text field).
+<br />    There is restricted amount of fields to search from, they include: 
+    <b>docContent, path, docName, docMetaDataCreation-Date, docMetaDataLast-Modified, docMetaDataAuthor, docMetaDatalanguage, 
+        docMetaDataContent-Type, docMetaDatastream_size, docMetaDataxmpTPg_NPages.</b>
+        <br />
+        <br />
+        
+        <MudText Typo="Typo.body1">Fields which can be queried:</MudText>
+        <div><b>docContent</b> contains the content of the document.</div>
+        <div><b>paht</b> contains path for the physical location on the server.</div>
+        <div><b>docName</b> contains the name of document.</div>
+        <div><b>docMetaDataCreation-Date</b> contains the date of document creation</div>
+        <div><b>docMetaDataLast-Modified</b> contains the date of last modification</div>
+        <div><b>docMetaDataAuthor</b> contains the name of document creator</div>
+        <div><b>docMetaDatalanguage</b> contains the information about the language of the content of the document</div>
+        <div><b>docMetaDataContent-Type</b> contains the information about document data type (extension)</div>
+        <div><b>docMetaDatastream_size</b> contains the information about size of the document (in bytes)</div>
+        <div><b>docMetaDataxmpTPg_NPages</b> contains the information about number of pages of the document</div>
+
+</MudText>
+    <br />
+<MudText Typo="Typo.h6">File upload</MudText>
+<MudText Typo="Typo.body2">To upload file to the server, just drag files to the Upload field or click there in order to 
+    open file manager to select files to upload them to the server</MudText>
+<br />
+<MudText Typo="Typo.h6">Download file</MudText>
+<MudText Typo="Typo.body2">To download file, in the <b>Actions</b> column You can find download button</MudText>
+<br />
+<MudText Typo="Typo.h6">Delete file</MudText>
+<MudText Typo="Typo.body2">To delete file, in the <b>Actions</b> column You can find delete button</MudText>
+<br />
+<MudText Typo="Typo.h6">Settings page</MudText>
+<MudText Typo="Typo.body2">In the settings page, You can find <b>Synonyms</b>, <b>Stop words</b> and <b>Protwords</b>. <br />
+    You can add synonyms/stop words/protwords to the solr via this page.</MudText>
+<br />
+@code {
+    class Template
+    {
+        public string SearchType { get; set; } 
+        public string Character { get; set; } 
+        public string Example { get; set; } 
+    }
+
+    List<Template> Temp = new List<Template>();
+    protected override void OnInitialized()
+    {
+        var a = new Template();
+        a.SearchType = "Single character (matches a single character)";
+        a.Character = "?";
+        a.Example = "The search string te?t would match both test and text.";
+        var b = new Template();
+        b.SearchType = "Multiple characters (matches zero or more sequential characters)";
+        b.Character = "*";
+        b.Example = "The wildcard search: tes* would match test, testing, and tester. You can also use wildcard characters in the middle of a term. For example: te*t would match test and text. *est would match pest and test.";
+        Temp.Add(a);
+        Temp.Add(b);
+    }
+}

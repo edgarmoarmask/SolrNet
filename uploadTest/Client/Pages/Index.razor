@@ -1,0 +1,73 @@
+﻿@inject HttpClient Http
+@page "/"
+@using CommonServiceLocator
+@using Newtonsoft.Json
+@using SolrNet
+@using uploadTest.Client.Pages.ChildComponents
+@using uploadTest.Shared
+
+<FileUpload />
+
+<!--Search input-->
+<MudAutocomplete T="string" Label="Search" @bind-Value="value" SearchFunc="@Search"
+                         ResetValueOnEmptyText="true"
+                         CoerceText="true" CoerceValue="true"
+                         Variant="Variant.Outlined"
+                         OnAdornmentClick="Query"
+                         OnKeyPress="Enter"
+                         AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" />
+<br />
+
+@*File Browser*@
+<TableView Files="indexFields" numberFounds="numberFounds" />
+
+@code {
+    private string value;
+    private string q;
+    public int numberFounds;
+    public List<IndexFields>? indexFields = null;
+    public async void Query()
+    {
+        if (value == String.Empty || value == null)
+        {
+            q = "*:*";
+        }
+        else
+        {
+            q = value;
+        }
+        var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
+        indexFields = response;
+        numberFounds = indexFields.Count;
+        StateHasChanged();
+    }
+
+    public async void Enter(KeyboardEventArgs e)
+    {
+        if (e.Code == "Enter" || e.Code == "NumpadEnter")
+        {
+            if (value == String.Empty)
+            {
+                q = "*:*";
+            }
+            else
+            {
+                q = value;
+            }
+            var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
+            indexFields = response;
+            numberFounds = indexFields.Count;
+            StateHasChanged();
+        }
+    }
+
+    private async Task<IEnumerable<string>> Search(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        var response = await Http.GetFromJsonAsync<List<string>>($"/api/File/Suggest/{value}");
+        
+        if (string.IsNullOrEmpty(value))
+            return new string[0];
+        return response;
+    }
+}
