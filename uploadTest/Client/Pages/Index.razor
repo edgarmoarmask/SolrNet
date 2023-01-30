@@ -8,14 +8,22 @@
 
 <FileUpload />
 
+
+
+    
+    <MudAutocomplete T="string" Label="Search" @bind-Value="value" SearchFunc="@Search"
+                     ResetValueOnEmptyText="true"
+                     CoerceText="true" CoerceValue="true"
+                     Variant="Variant.Outlined"
+                     OnAdornmentClick="Query"
+                     OnKeyDown="@Enter"
+                     AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" />
+
+<MudButton OnClick="()=>Query()" ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Primary"
+               Class="ml-auto mt-3 mb-3" >Search</MudButton>
+    
 <!--Search input-->
-<MudAutocomplete T="string" Label="Search" @bind-Value="value" SearchFunc="@Search"
-                         ResetValueOnEmptyText="true"
-                         CoerceText="true" CoerceValue="true"
-                         Variant="Variant.Outlined"
-                         OnAdornmentClick="Query"
-                         OnKeyPress="Enter"
-                         AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Secondary" />
+
 <br />
 
 @*File Browser*@
@@ -26,7 +34,7 @@
     private string q;
     public int numberFounds;
     public List<IndexFields>? indexFields = null;
-    public async void Query()
+    public async Task Query()
     {
         if (value == String.Empty || value == null)
         {
@@ -42,22 +50,12 @@
         StateHasChanged();
     }
 
-    public async void Enter(KeyboardEventArgs e)
+    public async Task Enter(KeyboardEventArgs e)
     {
+
         if (e.Code == "Enter" || e.Code == "NumpadEnter")
         {
-            if (value == String.Empty)
-            {
-                q = "*:*";
-            }
-            else
-            {
-                q = value;
-            }
-            var response = await Http.GetFromJsonAsync<List<IndexFields>>($"api/File/Query/{q}");
-            indexFields = response;
-            numberFounds = indexFields.Count;
-            StateHasChanged();
+            await Query();
         }
     }
 
